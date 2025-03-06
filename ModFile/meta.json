@@ -1,0 +1,7 @@
+{
+	"name": "ArrowBomb",
+	"version": "0.0.1",
+	"author": "ebe1.kenobi",
+	"description": "Adds a new bomb pickup that shoots laser arrows in all directions",
+	"dll": "TFModFortRisePickupArrowBomb.dll"
+}
