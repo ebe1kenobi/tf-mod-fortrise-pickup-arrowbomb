@@ -1,41 +1,12 @@
-Skeleton of a project to Create a Mod AI for the mod "Loader AI" https://github.com/ebe1kenobi/tf-mod-fortrise-loader-ai
+New pickup. A green bomb will appear from a treasure chest.
 
-You just need to implements the method **AIExAgent.Move();**. All the Level information are in the property "TowerFall.Level level" in parent class Agent. Exemple in https://github.com/ebe1kenobi/tf-mod-fortrise-ai-simple
+![compil2](https://github.com/user-attachments/assets/d2c48938-dd34-469f-b8ed-928471fb82eb)
 
-**requirements**: mod "Loader AI" https://github.com/ebe1kenobi/tf-mod-fortrise-loader-ai
 
-```C#
-using TowerFall;
-using System;
+When the bomb explode, 15 arrows will be fired to every direction.
 
-namespace TFModFortRiseAiExample
-{
-  public class AIExAgent : TFModFortRiseLoaderAI.Agent
-  {
+You can change the type of arrow, the number of arrow and the frequency of apparitio in the mod settings.
 
-    public AIExAgent(int index, String type, PlayerInput input) : base(index, type, input)
-    {
-    }
+![image](https://github.com/user-attachments/assets/0157138d-209b-40b2-82b1-8b8d646b5773)
 
-    protected override void Move()
-    {
-      this.input.inputState = new InputState();
-      this.input.inputState.AimAxis.X = 0;
-      this.input.inputState.MoveX = 0;
-      this.input.inputState.AimAxis.Y = 0;
-      this.input.inputState.MoveY = 0;
 
-      if (shoot.Count == 0 && 0 == random.Next(0, 19))
-      //if (0 == random.Next(0, 19))
-      {
-        this.input.inputState.JumpCheck = true;
-        this.input.inputState.JumpPressed = !this.input.prevInputState.JumpCheck;
-      }
-
-      this.input.prevInputState = this.input.GetCopy(this.input.inputState);
-
-    }
-  }
-}
-
-```
