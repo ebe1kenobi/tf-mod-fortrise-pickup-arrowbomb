@@ -1,7 +1,8 @@
 New pickup. A green bomb will appear from a treasure chest.
 
 
-![compil3](https://github.com/user-attachments/assets/883dbb8b-5746-4b86-ba7d-511d90a4271f)
+![compil4](https://github.com/user-attachments/assets/7d9d5d5a-ef9c-43c4-a07b-185ef2d6f23c)
+
 
 
 When the bomb explode, 15 arrows will be fired to every direction.
