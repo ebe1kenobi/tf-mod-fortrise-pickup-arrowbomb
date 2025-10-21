@@ -6,7 +6,7 @@ namespace TFModFortRisePickupArrowBomb
   public class TFModFortRisePickupArrowBombSettings : ModuleSettings
   {
 
-    [SettingsName("Always Activated")]
+    [SettingsName("Pickup activated even \n\nwhen variant is not selected")]
     public bool activated = false;
 
     public const int OncePerMatch = 0;
@@ -15,6 +15,9 @@ namespace TFModFortRisePickupArrowBomb
     [SettingsOptions("OncePerMatch", "OncePerRound", "Test")]
     public int periodicity = 0;
 
+    [SettingsName("Treasure Rate 1 chance on N, choose N")]
+    [SettingsNumber(10, 100)]
+    public int treasureRate = 100;
 
     [SettingsName("Number of Arrow")]
     [SettingsNumber(1, 100)]

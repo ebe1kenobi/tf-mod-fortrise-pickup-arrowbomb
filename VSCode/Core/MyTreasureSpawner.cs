@@ -39,7 +39,7 @@ namespace TFModFortRisePickupArrowBomb
         if (TFModFortRisePickupArrowBombModule.Settings.periodicity == TFModFortRisePickupArrowBombSettings.Test) {
           draw = 1;
         } else {
-          draw = rnd.Next(0, 10); 
+          draw = rnd.Next(0, TFModFortRisePickupArrowBombModule.Settings.treasureRate); 
         }
         if (draw == 1) {
         

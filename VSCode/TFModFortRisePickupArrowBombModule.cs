@@ -15,7 +15,7 @@ namespace TFModFortRisePickupArrowBomb
     public TFModFortRisePickupArrowBombModule()
     {
       Instance = this;
-      //Logger.Init("TFModFortRisePickupArrowBombLog");
+      //Logger.Init("ArrowBomb");
     }
 
     public override void Load()
