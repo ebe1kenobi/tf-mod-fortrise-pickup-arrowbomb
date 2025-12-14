@@ -7,11 +7,21 @@ using MonoMod.Utils;
 
 namespace TFModFortRisePickupArrowBomb
 {
-  [CustomPickup("LaserBombPickup", "0.0")]
-  public class LaserBombPickup : BombPickup
+  public class LaserBombPickup : BombPickup, IRegisterable
   {
-    public LaserBombPickup(Vector2 position, Vector2 targetPosition, int playerIndex)
-        : base(position, targetPosition, playerIndex)
+    public static IPickupEntry ArrowBombMeta = null!;
+
+    public static void Register(IModContent content, IModRegistry registry)
+    {
+      ArrowBombMeta = registry.Pickups.RegisterPickups("LaserBombPickup", new()
+      {
+        Name = "LaserBombPickup",
+        PickupType = typeof(LaserBombPickup)
+      });
+    }
+
+    public LaserBombPickup(Vector2 position, Vector2 targetPosition) //todo add playerindex!! but not supported by fortrise 5 for now
+        : base(position, targetPosition, -1)
     {
       var dynData = DynamicData.For(this);
       Sprite<int> image = (Sprite<int>)dynData.Get("image");
@@ -44,10 +54,47 @@ namespace TFModFortRisePickupArrowBomb
     {
       Sounds.pu_bombArrowExplode.Play(X, 1f);
 
+      ArrowTypes arrowType = 0;
+      switch (TFModFortRisePickupArrowBombModule.Settings.arrowType) {
+        case "Bomb":
+          arrowType = ArrowTypes.Bomb;
+          break;
+        case "SuperBomb":
+          arrowType = ArrowTypes.SuperBomb;
+          break;
+        case "Laser":
+          arrowType = ArrowTypes.Laser;
+          break;
+        case "Bramble":
+          arrowType = ArrowTypes.Bramble;
+          break;
+        case "Drill":
+          arrowType = ArrowTypes.Drill;
+          break;
+        case "Bolt":
+          arrowType = ArrowTypes.Bolt;
+          break;
+        case "Toy":
+          arrowType = ArrowTypes.Toy;
+          break;
+        case "Feather":
+          arrowType = ArrowTypes.Feather;
+          break;
+        case "Trigger":
+          arrowType = ArrowTypes.Trigger;
+          break;
+        case "Prism":
+          arrowType = ArrowTypes.Prism;
+          break;
+        case "Normal":
+        default:
+          arrowType = ArrowTypes.Feather;
+          break;
+      }
       for (int i = 0; i < TFModFortRisePickupArrowBombModule.Settings.numberArrow; i++)
       {
         float angle = i * (MathHelper.TwoPi / TFModFortRisePickupArrowBombModule.Settings.numberArrow);
-        Arrow arrow = Arrow.Create((ArrowTypes)TFModFortRisePickupArrowBombModule.Settings.arrowType, this, Position, angle, null, null);
+        Arrow arrow = Arrow.Create(arrowType, this, Position, angle, null, null);
         Level.Add(arrow);
       }
 

@@ -1,54 +1,68 @@
 ﻿using System;
+using System.Diagnostics;
 using FortRise;
+using Microsoft.Extensions.Logging;
 using Monocle;
 using TowerFall;
 
+//Instance.Context.Interop.GetMod
+
 namespace TFModFortRisePickupArrowBomb
 {
-  [Fort("com.ebe1.kenobi.TFModFortRisePickupArrowBomb", "TFModFortRisePickupArrowBomb")]
-  public class TFModFortRisePickupArrowBombModule : FortModule
+  public class TFModFortRisePickupArrowBombModule : Mod
   {
     public static TFModFortRisePickupArrowBombModule Instance;
+
+    private static Type[] Registerables = [
+        typeof(LaserBombPickup),
+        typeof(TextureRegistry),
+        typeof(Variants)
+
+    ];
+    internal Type[] Hookables = [
+        //typeof(MyPickup),
+        //typeof(MySession),
+        typeof(MyTreasureSpawner),
+    ];
+    public static TFModFortRisePickupArrowBombSettings Settings => Instance.GetSettings<TFModFortRisePickupArrowBombSettings>()!;
     public Atlas Atlas;
-    public override Type SettingsType => typeof(TFModFortRisePickupArrowBombSettings);
-    public static TFModFortRisePickupArrowBombSettings Settings => (TFModFortRisePickupArrowBombSettings)Instance.InternalSettings;
-    public TFModFortRisePickupArrowBombModule()
+    //public override Type SettingsType => typeof(TFModFortRisePickupArrowBombSettings);
+    //public static TFModFortRisePickupArrowBombSettings Settings => (TFModFortRisePickupArrowBombSettings)Instance.InternalSettings;
+    public TFModFortRisePickupArrowBombModule(IModContent content, IModuleContext context, ILogger logger) : base(content, context, logger)
     {
+      if (!Debugger.IsAttached)
+      {
+        //Debugger.Launch(); // Proposera d’attacher Visual Studio
+      }
       Instance = this;
-      //Logger.Init("ArrowBomb");
+      TFModFortRisePickupArrowBomb.Logger.Init("ArrowBomb");
+
+      
+      foreach (var hookable in Hookables)
+      {
+        hookable.GetMethod(nameof(IHookable.Load))!.Invoke(null, [context.Harmony]);
+      }
+
+      foreach (var registerable in Registerables)
+      {
+        registerable.GetMethod(nameof(IRegisterable.Register))!.Invoke(null, [content, context.Registry]);
+      }
     }
 
-    public override void Load()
+    public override ModuleSettings CreateSettings()
     {
-      MyPickup.Load();
-      MySession.Load();
-      MyTreasureSpawner.Load();
+      return new TFModFortRisePickupArrowBombSettings();
     }
 
-    public override void Unload()
-    {
-      MyPickup.Unload();
-      MySession.Unload();
-      MyTreasureSpawner.Unload();
-      Instance = null;
-    }
-
-    public override void LoadContent()
-    {
-      Atlas = Content.LoadAtlas("Atlas/atlas.xml", "Atlas/atlas.png"); //TODO change the image
-    }
+    //public override void LoadContent()
+    //{
+    //  Atlas = Content.LoadAtlas("Atlas/atlas.xml", "Atlas/atlas.png"); //TODO change the image
+    //}
 
     public static bool activated() {
-      return VariantManager.GetCustomVariant("ArrowBomb") || TFModFortRisePickupArrowBombModule.Settings.activated;
+      return Variants.ArrowBomb.IsActive() || TFModFortRisePickupArrowBombModule.Settings.activated;
     }
 
-    public override void OnVariantsRegister(VariantManager manager, bool noPerPlayer = false)
-    {
-      var icon = new CustomVariantInfo(
-          "ArrowBomb", VariantManager.GetVariantIconFromName("ArrowBomb", Atlas), 
-          CustomVariantFlags.None
-          );
-      manager.AddVariant(icon);
-    }
+
   }
 }

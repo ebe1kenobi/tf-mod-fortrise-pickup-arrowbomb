@@ -1,45 +1,44 @@
 ﻿
-namespace TFModFortRisePickupArrowBomb
-{
-  public class MySession
-  {
-    public static int NbLaserBombPickupActivated { get; set; }
+//using FortRise;
+//using HarmonyLib;
+//using TowerFall;
 
-    internal static void Load()
-    {
-      On.TowerFall.Session.StartGame += StartGame_patch;
-      On.TowerFall.Session.GotoNextRound += GotoNextRound_patch;
-    }
+//namespace TFModFortRisePickupArrowBomb
+//{
+//  public class MySession : IHookable
+//  {
+//    public static int NbLaserBombPickupActivated { get; set; }
 
-    internal static void Unload()
-    {
-      On.TowerFall.Session.StartGame -= StartGame_patch;
-      On.TowerFall.Session.GotoNextRound -= GotoNextRound_patch;
-    }
-    public MySession()
-    {
-    }
+//    public static void Load(IHarmony harmony)
+//    {
+//      harmony.Patch(
+//          AccessTools.DeclaredMethod(typeof(Session), nameof(Session.StartGame)),
+//          prefix: new HarmonyMethod(StartGame_patch)
+//      );
+//      harmony.Patch(
+//          AccessTools.DeclaredMethod(typeof(Session), nameof(Session.GotoNextRound)),
+//          prefix: new HarmonyMethod(GotoNextRound_patch)
+//      );
+//    }
 
-    public static void StartGame_patch(On.TowerFall.Session.orig_StartGame orig, global::TowerFall.Session self)
-    {
-      if (TFModFortRisePickupArrowBombModule.Settings.periodicity == TFModFortRisePickupArrowBombSettings.OncePerMatch)
-      {
-        NbLaserBombPickupActivated = 0;
-      }
-      orig(self);
-    }
+//    public static void StartGame_patch(Session __instance)
+//    {
+//      if (TFModFortRisePickupArrowBombModule.Settings.periodicity == "OncePerMatch")
+//      {
+//        NbLaserBombPickupActivated = 0;
+//      }
+//    }
 
-    public static void GotoNextRound_patch(On.TowerFall.Session.orig_GotoNextRound orig, global::TowerFall.Session self)
-    {
-      if (TFModFortRisePickupArrowBombModule.Settings.periodicity == TFModFortRisePickupArrowBombSettings.OncePerRound)
-      {
-        NbLaserBombPickupActivated = 0;
-      }
-      if (TFModFortRisePickupArrowBombModule.Settings.periodicity == TFModFortRisePickupArrowBombSettings.Test)
-      {
-        NbLaserBombPickupActivated = 0;
-      }
-      orig(self);
-    }
-  }
-}
+//    public static void GotoNextRound_patch(Session __instance)
+//    {
+//      if (TFModFortRisePickupArrowBombModule.Settings.periodicity == "OncePerRound")
+//      {
+//        NbLaserBombPickupActivated = 0;
+//      }
+//      if (TFModFortRisePickupArrowBombModule.Settings.periodicity == "Test")
+//      {
+//        NbLaserBombPickupActivated = 0;
+//      }
+//    }
+//  }
+//}

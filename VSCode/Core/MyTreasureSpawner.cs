@@ -1,57 +1,88 @@
-﻿using FortRise;
-using Microsoft.Xna.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using TowerFall;
+using FortRise;
+using HarmonyLib;
+using Microsoft.Xna.Framework;
 using MonoMod.Utils;
+using TowerFall;
 
 namespace TFModFortRisePickupArrowBomb
 {
-  public class MyTreasureSpawner
+
+  public class MyTreasureSpawner : IHookable
   {
-    internal static void Load()
+    public static void Load(IHarmony harmony)
     {
-      On.TowerFall.TreasureSpawner.GetChestSpawnsForLevel += GetChestSpawnsForLevel_patch;
+      harmony.Patch(
+          AccessTools.DeclaredConstructor(typeof(TreasureSpawner), [typeof(Session), typeof(VersusTowerData)]),
+          postfix: new HarmonyMethod(TreasureSpawner_ctor_Postfix)
+      );
+      //harmony.Patch(
+      //    AccessTools.DeclaredMethod(typeof(TreasureSpawner), nameof(TreasureSpawner.GetChestSpawnsForLevel)),
+      //    postfix: new HarmonyMethod(GetChestSpawnsForLevel_patch)
+      //);
     }
 
-    internal static void Unload()
+    public static void TreasureSpawner_ctor_Postfix(TreasureSpawner __instance)
     {
-      On.TowerFall.TreasureSpawner.GetChestSpawnsForLevel -= GetChestSpawnsForLevel_patch;
-    }
+      Logger.Info("TreasureSpawner_ctor_Postfix");
+      var ArrowBomb = LaserBombPickup.ArrowBombMeta.Pickups;
+      Logger.Info($"ArrowBomb != null {LaserBombPickup.ArrowBombMeta.Name} {(int)ArrowBomb}");
 
-    public static List<TreasureChest> GetChestSpawnsForLevel_patch(
-        On.TowerFall.TreasureSpawner.orig_GetChestSpawnsForLevel orig,
-        TowerFall.TreasureSpawner self,
-        List<Vector2> chestPositions,
-        List<Vector2> bigChestPositions)
-    {
-      List<TreasureChest> chestSpawnsForLevel = orig(self, chestPositions, bigChestPositions);
-
-      if (chestSpawnsForLevel.Count == 0) {
-        return chestSpawnsForLevel;
+      if (!TFModFortRisePickupArrowBombModule.activated()) {
+        __instance.TreasureRates[(int)ArrowBomb] = 0f;
+        return;
       }
 
-      if (!TFModFortRisePickupArrowBombModule.activated()) return chestSpawnsForLevel;
-
-      if (MySession.NbLaserBombPickupActivated == 0) {
-        Random rnd = new Random();
-        int draw;
-        if (TFModFortRisePickupArrowBombModule.Settings.periodicity == TFModFortRisePickupArrowBombSettings.Test) {
-          draw = 1;
-        } else {
-          draw = rnd.Next(0, TFModFortRisePickupArrowBombModule.Settings.treasureRate); 
-        }
-        if (draw == 1) {
-        
-          var dynData = DynamicData.For(chestSpawnsForLevel[0]);
-          List<Pickups> pickups = (List<Pickups>)dynData.Get("pickups");
-          pickups[0] = ModRegisters.PickupType<LaserBombPickup>();
-          MySession.NbLaserBombPickupActivated++;
-          dynData.Dispose();
-        }
+      Random rnd = new Random();
+      int draw;
+      if (TFModFortRisePickupArrowBombModule.Settings.periodicity == "Test")
+      {
+        draw = 1;
       }
+      else
+      {
+        draw = rnd.Next(0, TFModFortRisePickupArrowBombModule.Settings.treasureRate);
+      }
+      Logger.Info($"draw = {draw}");
 
-      return chestSpawnsForLevel;
+      if (draw == 1)
+      {
+        __instance.TreasureRates[(int)ArrowBomb] = 1f;
+      }
     }
+
+    //public static void GetChestSpawnsForLevel_patch(
+    //    TreasureSpawner __instance,
+    //    List<Vector2> chestPositions,
+    //    List<Vector2> bigChestPositions,
+    //    List<TreasureChest> __result
+    //    )
+    //{
+
+      //  //if (chestSpawnsForLevel.Count == 0) {
+      //  if (__result.Count == 0) {
+      //    return;
+      //  }
+
+      //  if (!TFModFortRisePickupArrowBombModule.activated()) return;
+
+      //  if (MySession.NbLaserBombPickupActivated == 0) {
+      //    Random rnd = new Random();
+      //    int draw;
+      //    if (TFModFortRisePickupArrowBombModule.Settings.periodicity == "Test") {
+      //      draw = 1;
+      //    } else {
+      //      draw = rnd.Next(0, TFModFortRisePickupArrowBombModule.Settings.treasureRate); 
+      //    }
+      //    if (draw == 1) {
+      //      var dynData = DynamicData.For(__result[0]);
+      //      List<Pickups> pickups = (List<Pickups>)dynData.Get("pickups");
+      //      pickups[0] = ArrowBomb;
+      //      MySession.NbLaserBombPickupActivated++;
+      //      dynData.Dispose();
+      //    }
+      //  }
+      //}
   }
 }
