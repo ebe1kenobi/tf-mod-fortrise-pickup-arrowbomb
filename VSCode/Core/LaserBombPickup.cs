@@ -13,15 +13,23 @@ namespace TFModFortRisePickupArrowBomb
 
     public static void Register(IModContent content, IModRegistry registry)
     {
+      // FortRise 5.2.3+ : PickupConfiguration exige une fabrique CreatePickup
+      // (Func<CreatePickupArgs, Pickup>). Auparavant le registre instanciait
+      // lui-meme le type via un constructeur (Vector2, Vector2).
+      //
+      // args.PlayerIndex est desormais disponible : l'explosion est enfin attribuee
+      // au joueur qui a ouvert le coffre (auparavant figee a -1, donc aucun kill
+      // credite).
       ArrowBombMeta = registry.Pickups.RegisterPickups("LaserBombPickup", new()
       {
         Name = "LaserBombPickup",
-        PickupType = typeof(LaserBombPickup)
+        PickupType = typeof(LaserBombPickup),
+        CreatePickup = args => new LaserBombPickup(args.Position, args.TargetPosition, args.PlayerIndex)
       });
     }
 
-    public LaserBombPickup(Vector2 position, Vector2 targetPosition) //todo add playerindex!! but not supported by fortrise 5 for now
-        : base(position, targetPosition, -1)
+    public LaserBombPickup(Vector2 position, Vector2 targetPosition, int playerIndex)
+        : base(position, targetPosition, playerIndex)
     {
       var dynData = DynamicData.For(this);
       Sprite<int> image = (Sprite<int>)dynData.Get("image");
