@@ -1,4 +1,4 @@
-﻿using FortRise;
+using FortRise;
 
 namespace TFModFortRisePickupArrowBomb
 {
@@ -10,6 +10,9 @@ namespace TFModFortRisePickupArrowBomb
     {
       ArrowBomb = registry.Variants.RegisterVariant("ArrowBomb", new()
       {
+        // Header commun a tous mes mods : sans lui FortRise retombe sur le nom du
+        // mod et chacun cree sa propre colonne dans l'ecran des variantes.
+        Header = "EBE1 MODS",
         Title = "ArrowBomb",
         Flags = CustomVariantFlags.None,
         Icon = TextureRegistry.ArrowBomb
