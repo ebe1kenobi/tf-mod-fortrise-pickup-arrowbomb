@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using FortRise;
 using Microsoft.Extensions.Logging;
@@ -35,7 +35,7 @@ namespace TFModFortRisePickupArrowBomb
         //Debugger.Launch(); // Proposera d’attacher Visual Studio
       }
       Instance = this;
-      TFModFortRisePickupArrowBomb.Logger.Init("ArrowBomb");
+      TFModFortRisePickupArrowBomb.Logger.Init(Meta.Name);
 
       
       foreach (var hookable in Hookables)
