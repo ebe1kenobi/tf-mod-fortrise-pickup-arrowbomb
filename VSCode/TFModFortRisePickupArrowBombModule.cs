@@ -16,13 +16,16 @@ namespace TFModFortRisePickupArrowBomb
     private static Type[] Registerables = [
         typeof(LaserBombPickup),
         typeof(TextureRegistry),
-        typeof(Variants)
-
+        typeof(Variants),
+        // Apres le pickup : le hook de tour cite sa valeur Pickups, qui n'existe
+        // qu'une fois l'enregistrement fait.
+        typeof(TreasureRates)
     ];
     internal Type[] Hookables = [
         //typeof(MyPickup),
         //typeof(MySession),
         typeof(MyTreasureSpawner),
+        typeof(MyVariantToggle),
     ];
     public static TFModFortRisePickupArrowBombSettings Settings => Instance.GetSettings<TFModFortRisePickupArrowBombSettings>()!;
     public Atlas Atlas;
@@ -35,7 +38,7 @@ namespace TFModFortRisePickupArrowBomb
         //Debugger.Launch(); // Proposera d’attacher Visual Studio
       }
       Instance = this;
-      TFModFortRisePickupArrowBomb.Logger.Init(Meta.Name);
+      TFModFortRisePickupArrowBomb.Logger.Init(logger);
 
       
       foreach (var hookable in Hookables)
@@ -46,6 +49,32 @@ namespace TFModFortRisePickupArrowBomb
       foreach (var registerable in Registerables)
       {
         registerable.GetMethod(nameof(IRegisterable.Register))!.Invoke(null, [content, context.Registry]);
+      }
+    }
+
+    /// <summary>
+    /// Ecrit les reglages sur le disque tout de suite.
+    ///
+    /// FortRise ne les enregistre qu'en sortant de SON ecran d'options : un reglage
+    /// change depuis la fenetre de la variante ne vivrait qu'en memoire et serait
+    /// perdu en quittant. SaveSettings est internal cote FortRise, d'ou la reflexion.
+    /// </summary>
+    public static void SaveSettingsNow()
+    {
+      if (Instance == null)
+      {
+        return;
+      }
+
+      try
+      {
+        var method = typeof(Mod).GetMethod("SaveSettings",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        method?.Invoke(Instance, null);
+      }
+      catch (Exception e)
+      {
+        TFModFortRisePickupArrowBomb.Logger.Info($"[Settings] sauvegarde immediate impossible : {e.Message}");
       }
     }
 

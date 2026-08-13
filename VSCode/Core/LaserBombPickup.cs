@@ -1,4 +1,4 @@
-﻿using FortRise;
+using FortRise;
 using Microsoft.Xna.Framework;
 using Monocle;
 using TowerFall;
@@ -23,6 +23,10 @@ namespace TFModFortRisePickupArrowBomb
       ArrowBombMeta = registry.Pickups.RegisterPickups("LaserBombPickup", new()
       {
         Name = "LaserBombPickup",
+        // Une unite de masque vaut un milliieme, le taux le plus bas du jeu : c'est
+        // ce qui permet au reglage de descendre sous 1 alors que l'API ne sait
+        // ajouter que des entiers. Voir Rarity.
+        Chance = Rarity.Unit,
         PickupType = typeof(LaserBombPickup),
         CreatePickup = args => new LaserBombPickup(args.Position, args.TargetPosition, args.PlayerIndex)
       });

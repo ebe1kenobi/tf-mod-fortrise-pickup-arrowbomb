@@ -19,6 +19,10 @@ Tick the **ArrowBomb** variant on the versus variants screen, or turn on the
 "Pickup activated even when variant is not selected" setting to make the pickup
 appear without the variant.
 
+Press the **left upper shoulder** (Alt2) on that variant to open the mod's
+settings right there, without leaving the variants screen. Whatever you change is
+written to disk when the window closes.
+
 > All my mods declare the same `Header` (`EBE1 MODS`), so their variants are
 > grouped into a **single column** of the variants screen instead of one column
 > per mod.
@@ -28,10 +32,26 @@ appear without the variant.
 | Setting | Purpose |
 |---------|---------|
 | Pickup activated even when variant is not selected | spawn the pickup even when the variant is unticked |
-| Periodicity | `Normal` (random roll) or `Test` (every level, for trying it out) |
-| Treasure Rate 1 chance on N | spawn odds: 1 chance in N |
-| Number of Arrow | how many arrows are granted |
-| Arrow Type | arrow type granted (Bomb, Laser, Bramble, Drill, Bolt, Toy, Feather, Trigger, Prism...) |
+| Periodicity | `Normal` (the game draws it) or `Test` (forced into the chests, for trying it out) |
+| Treasure rate | how often it turns up, from `0.001` (as rare as the Chaos Orb) to `20.000`. The labels name the game items sharing that rate, which says more than a number |
+| Number of Arrow | how many arrows the pickup grants |
+| Arrow Type | which arrow type it grants |
+
+## How the pickup reaches the chests
+
+Registering a pickup only makes it *exist*: FortRise widens the treasure tables,
+but the new entry stays at zero and the pickup never drops. What puts it in the
+draw is an `ITowerHook`, whose `VersusTowerTreasurePatch` runs inside the
+`TreasureSpawner` constructor - once per match, after the variants are set.
+
+The weight the game draws on is `units x Chance`. `Chance` is declared when the
+pickup is registered and is fixed at **0.001** here - the lowest rate in the game,
+the one the Chaos Orb uses. The setting counts those units, which is how a rate
+below 1 is reachable at all: the API only adds integers.
+
+The upside over writing into `TreasureRates` directly: the game's weighted draw
+still applies afterwards, so variant exclusions, the tower's item set and arrow
+shuffle are all respected, and several chests can hold it.
 
 ## Build / deployment
 
