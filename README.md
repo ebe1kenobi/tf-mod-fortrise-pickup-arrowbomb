@@ -1,5 +1,7 @@
 # ArrowBomb
 
+![compil4](https://github.com/user-attachments/assets/7d9d5d5a-ef9c-43c4-a07b-185ef2d6f23c)
+
 Adds a pickup that grants a volley of arrows of a chosen type (bomb, laser,
 bramble...). A chest in the level may hold it, based on an adjustable random roll.
 
