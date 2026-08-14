@@ -27,6 +27,13 @@ written to disk when the window closes.
 > grouped into a **single column** of the variants screen instead of one column
 > per mod.
 
+<img width="764" height="402" alt="image" src="https://github.com/user-attachments/assets/abc0d9d8-da2f-4e68-9e6c-7405b949c6e7" />
+
+<img width="865" height="232" alt="image" src="https://github.com/user-attachments/assets/ab8111fe-ecdc-403b-9619-cced4dc97022" />
+
+<img width="839" height="692" alt="image" src="https://github.com/user-attachments/assets/92a2655a-bcdf-49f5-a6af-840615f2cc4f" />
+
+
 ## Settings
 
 | Setting | Purpose |
